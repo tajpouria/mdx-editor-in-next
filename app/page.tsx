@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
@@ -26,6 +26,10 @@ export default function Home() {
   const [resume, setResume] = useState("");
   const [analyses, setAnalyses] = useState<CategoryResult[] | null>([]);
   const [mounted, setMounted] = useState(false);
+  const [isRightBarExpanded, setIsRightBarExpanded] = useState(false);
+  const [leftPanelWidth, setLeftPanelWidth] = useState("66.66%");
+  const [isResizing, setIsResizing] = useState(false);
+  const dividerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -107,6 +111,39 @@ export default function Home() {
     return calculateAverageScore(allMetrics);
   };
 
+  const toggleRightBar = () => {
+    setIsRightBarExpanded(!isRightBarExpanded);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsResizing(true);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isResizing) return;
+    const newLeftPanelWidth = `${(e.clientX / window.innerWidth) * 100}%`;
+    setLeftPanelWidth(newLeftPanelWidth);
+  };
+
+  const handleMouseUp = () => {
+    setIsResizing(false);
+  };
+
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    } else {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    }
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isResizing]);
+
   return (
     <>
       {analyzing && (
@@ -117,13 +154,31 @@ export default function Home() {
         </div>
       )}
       <Suspense fallback={null}>
-        <div className="grid grid-cols-3 h-screen">
-          <div className="col-span-2 border-2 overflow-auto">
+        <div
+          className="grid h-screen"
+          style={{ gridTemplateColumns: `${leftPanelWidth} auto 1fr` }}
+        >
+          <div className="border-2 overflow-auto">
             {mounted && (
               <EditorComp markdown={resume} setMarkdown={setResume} />
             )}
           </div>
-          <div className="col-span-1 border-2 border-solid overflow-auto">
+          <div
+            ref={dividerRef}
+            className="w-2 cursor-col-resize bg-gray-300"
+            onMouseDown={handleMouseDown}
+          ></div>
+          <div
+            className={`border-2 border-solid overflow-auto transition-all duration-300 relative ${
+              isRightBarExpanded ? "col-span-1" : ""
+            }`}
+          >
+            <button
+              onClick={toggleRightBar}
+              className="absolute top-2 right-2 bg-gray-200 p-2 rounded-full"
+            >
+              {isRightBarExpanded ? "<" : ">"}
+            </button>
             <h1>
               <b>Job Description</b>
             </h1>
@@ -143,7 +198,6 @@ export default function Home() {
               <div className="mt-4 p-4">
                 <h2 className="text-xl font-semibold mb-2">Analyses</h2>
 
-                {/* Summary of Scores */}
                 <div className="mb-4">
                   <h3 className="text-lg font-medium mb-1">Summary</h3>
                   <p>
@@ -165,7 +219,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Individual Category Analyses */}
                 {analyses.map((categoryResult, categoryIndex) => (
                   <div key={categoryIndex} className="mb-4">
                     <h3 className="text-lg font-medium mb-1">
@@ -183,8 +236,12 @@ export default function Home() {
                         <h4 className="font-semibold">
                           {metricResult.metricName}
                         </h4>
-                        <p><b>Score:</b> {metricResult.result.score}/10</p>
-                        <p><b>Reason:</b> {metricResult.result.reason}</p>
+                        <p>
+                          <b>Score:</b> {metricResult.result.score}/10
+                        </p>
+                        <p>
+                          <b>Reason:</b> {metricResult.result.reason}
+                        </p>
                         {metricResult.result.tips.length > 0 && (
                           <div>
                             <p className="font-medium">Tips:</p>
