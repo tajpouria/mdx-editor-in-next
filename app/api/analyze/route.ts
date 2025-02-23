@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
             });
 
             const result = await generateObject({
-              model: google("gemini-1.5-pro-latest"),
+              model: google("gemini-2.0-flash"),
               temperature: 0,
               schema: z.object({
                 score: z.number(),

@@ -86,9 +86,9 @@ export default function Home() {
 
   const getScoreColor = (score: number) => {
     if (score >= 9) return "bg-green-300";
-    if (score >= 7) return "bg-green-200";
-    if (score >= 5) return "bg-yellow-200";
-    if (score >= 3) return "bg-orange-200";
+    if (score >= 7) return "bg-green-100";
+    if (score >= 5) return "bg-yellow-100";
+    if (score >= 3) return "bg-orange-100";
     return "bg-red-200";
   };
 
@@ -183,8 +183,8 @@ export default function Home() {
                         <h4 className="font-semibold">
                           {metricResult.metricName}
                         </h4>
-                        <p>Score: {metricResult.result.score}/10</p>
-                        <p>Reason: {metricResult.result.reason}</p>
+                        <p><b>Score:</b> {metricResult.result.score}/10</p>
+                        <p><b>Reason:</b> {metricResult.result.reason}</p>
                         {metricResult.result.tips.length > 0 && (
                           <div>
                             <p className="font-medium">Tips:</p>
