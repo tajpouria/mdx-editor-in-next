@@ -1,24 +1,80 @@
-import Image from 'next/image'
-import dynamic from 'next/dynamic'
-import { Suspense } from 'react'
+"use client";
 
-const EditorComp = dynamic(() => import('./EditorComponent'), { ssr: false })
+import { useState } from "react";
+import useLocalStorage from "use-local-storage";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
-const markdown = `
-Hello **world**!
-`
+const EditorComp = dynamic(() => import("./EditorComponent"), { ssr: false });
 
 export default function Home() {
+  const [analyzing, setAnalyzing] = useState(false);
+  const [jobDescription, setJobDescription] = useLocalStorage(
+    "jobDescription",
+    ""
+  );
+  const [resume, setResume] = useLocalStorage("resume", "");
+  const [analyses, setAnalyses] = useLocalStorage("analyses", []);
+
+  const runAnalysis = async () => {
+    if (!jobDescription || !resume) {
+      alert("Please enter job description and resume");
+      return;
+    }
+
+    setAnalyzing(true);
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jobDescription,
+          resume,
+        }),
+      });
+      const data = await res.json();
+      setAnalyses(data);
+      setAnalyzing(false);
+    } catch (e) {
+      alert("An error occurred. Please check the console for more details.");
+      console.error(e);
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
   return (
     <>
-    <p>This is a bare-bones unstyled MDX editor without any plugins and no toolbar. Check the EditorComponent.tsx file for the code.</p>
-      <p>To enable more features, add the respective plugins to your instance - see <a className="text-blue-600" href="https://mdxeditor.dev/editor/docs/getting-started">the docs</a> for more details.</p>
-      <br />
-    <div style={{border: '1px solid black'}}>
+      {analyzing && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white p-4 rounded-lg">
+            <p className="text-lg">Analyzing...</p>
+          </div>
+        </div>
+      )}
       <Suspense fallback={null}>
-        <EditorComp markdown={markdown} />
+        <div className="grid grid-cols-3 h-screen">
+          <div className="col-span-2 border-2 overflow-auto">
+            <EditorComp markdown={resume} setMarkdown={setResume} />
+          </div>
+          <div className="col-span-1 border-2 border-solid overflow-auto">
+            <h1>Job Description:</h1>
+            <textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              className="w-full h-96 border-2 border-solid"
+            />
+            <button
+              onClick={runAnalysis}
+              className="bg-white w-full hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+            >
+              Analyze
+            </button>
+          </div>
+        </div>
       </Suspense>
-    </div>
     </>
-  )
+  );
 }

@@ -1,26 +1,93 @@
 "use client";
+import {
+  toolbarPlugin,
+  KitchenSinkToolbar,
+  listsPlugin,
+  quotePlugin,
+  headingsPlugin,
+  linkPlugin,
+  linkDialogPlugin,
+  imagePlugin,
+  tablePlugin,
+  thematicBreakPlugin,
+  frontmatterPlugin,
+  codeBlockPlugin,
+  sandpackPlugin,
+  codeMirrorPlugin,
+  directivesPlugin,
+  AdmonitionDirectiveDescriptor,
+  diffSourcePlugin,
+  markdownShortcutPlugin,
+  SandpackConfig,
+  MDXEditor,
+} from "@mdxeditor/editor";
 
-import { MDXEditor, MDXEditorMethods, headingsPlugin } from "@mdxeditor/editor";
-import { FC } from "react";
-
-interface EditorProps {
-  markdown: string;
-  editorRef?: React.MutableRefObject<MDXEditorMethods | null>;
+const defaultSnippetContent = `
+export default function App() {
+  return (
+    <div className="App">
+      <h1>Hello CodeSandbox</h1>
+      <h2>Start editing to see some magic happen!</h2>
+    </div>
+  );
 }
+`.trim();
 
-/**
- * Extend this Component further with the necessary plugins or props you need.
- * proxying the ref is necessary. Next.js dynamically imported components don't support refs.
- */
-const Editor: FC<EditorProps> = ({ markdown, editorRef }) => {
+const reactSandpackConfig: SandpackConfig = {
+  defaultPreset: "react",
+  presets: [
+    {
+      label: "React",
+      name: "react",
+      meta: "live",
+      sandpackTemplate: "react",
+      sandpackTheme: "light",
+      snippetFileName: "/App.js",
+      snippetLanguage: "jsx",
+      initialSnippetContent: defaultSnippetContent,
+    },
+  ],
+};
+const allPlugins = (diffMarkdown: string) => [
+  toolbarPlugin({ toolbarContents: () => <KitchenSinkToolbar /> }),
+  listsPlugin(),
+  quotePlugin(),
+  headingsPlugin(),
+  linkPlugin(),
+  linkDialogPlugin(),
+  imagePlugin({ imageUploadHandler: async () => "/sample-image.png" }),
+  tablePlugin(),
+  thematicBreakPlugin(),
+  frontmatterPlugin(),
+  codeBlockPlugin({ defaultCodeBlockLanguage: "txt" }),
+  sandpackPlugin({ sandpackConfig: reactSandpackConfig }),
+  codeMirrorPlugin({
+    codeBlockLanguages: {
+      js: "JavaScript",
+      css: "CSS",
+      txt: "text",
+      tsx: "TypeScript",
+    },
+  }),
+  directivesPlugin({ directiveDescriptors: [AdmonitionDirectiveDescriptor] }),
+  diffSourcePlugin({ viewMode: "rich-text", diffMarkdown }),
+  markdownShortcutPlugin(),
+];
+
+export default function EditorComp({
+  markdown,
+  setMarkdown,
+}: {
+  markdown: string;
+  setMarkdown: (markdown: string) => void;
+}) {
   return (
     <MDXEditor
-      onChange={(e) => console.log(e)}
-      ref={editorRef}
       markdown={markdown}
-      plugins={[headingsPlugin()]}
+      onChange={setMarkdown}
+      className="full-demo-mdxeditor"
+      contentEditableClassName="prose max-w-full font-sans"
+      plugins={allPlugins(markdown)}
     />
   );
-};
-
-export default Editor;
+}
