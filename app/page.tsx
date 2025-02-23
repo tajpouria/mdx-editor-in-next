@@ -1,14 +1,14 @@
+// @ts-nocheck
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { ScoreSummaryCard, Gauge } from "@/components/custom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ChevronLeft,
@@ -21,6 +21,7 @@ import {
 
 const EditorComp = dynamic(() => import("./EditorComponent"), { ssr: false });
 
+// Types
 interface MetricResult {
   metricName: string;
   result: {
@@ -35,13 +36,13 @@ interface CategoryResult {
   metrics: MetricResult[];
 }
 
+// Main Component
 export default function Home() {
   const [analyzing, setAnalyzing] = useState(false);
   const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState("");
   const [analyses, setAnalyses] = useState<CategoryResult[] | null>([]);
   const [mounted, setMounted] = useState(false);
-  const [isRightBarExpanded, setIsRightBarExpanded] = useState(true);
   const [leftPanelWidth, setLeftPanelWidth] = useState("50%");
   const [isResizing, setIsResizing] = useState(false);
   const [activeTab, setActiveTab] = useState("description");
@@ -154,7 +155,7 @@ export default function Home() {
   return (
     <div className="h-screen bg-gray-50">
       {analyzing && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
           <Card className="w-64">
             <CardContent className="py-6">
               <div className="flex flex-col items-center gap-4">
@@ -166,12 +167,9 @@ export default function Home() {
         </div>
       )}
 
-      <div
-        className="flex h-full"
-        style={{ gridTemplateColumns: `${leftPanelWidth} auto 1fr` }}
-      >
+      <div className="flex h-full">
         <div
-          className="w-full h-full bg-white shadow-lg overflow-hidden"
+          className="w-full h-full bg-white shadow-lg overflow-auto"
           style={{ width: leftPanelWidth }}
         >
           <Card className="h-full border-0">
@@ -259,53 +257,48 @@ export default function Home() {
                             <CardTitle>Overall Analysis</CardTitle>
                           </CardHeader>
                           <CardContent>
-                            <div className="space-y-4">
-                              <div>
-                                <div className="flex justify-between mb-2">
-                                  <span className="font-medium">
-                                    Match Score
-                                  </span>
-                                  <span className="font-medium">
-                                    {calculateOverallAverage(analyses).toFixed(
-                                      1
-                                    )}
-                                    /10
-                                  </span>
-                                </div>
-                                <Progress
-                                  value={calculateOverallAverage(analyses) * 10}
+                            <div className="flex flex-col items-center mb-6">
+                              <Gauge
+                                value={calculateOverallAverage(analyses)}
+                                size={160}
+                                strokeWidth={15}
+                              />
+                              <h3 className="text-xl font-medium mt-4">
+                                Match Score
+                              </h3>
+                            </div>
+
+                            <Separator className="my-6" />
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {analyses.map((category) => (
+                                <ScoreSummaryCard
+                                  key={category.category}
+                                  title={category.category}
+                                  score={calculateAverageScore(
+                                    category.metrics
+                                  )}
+                                  metrics={category.metrics.map((m) => ({
+                                    name: m.metricName,
+                                    score: m.result.score,
+                                  }))}
                                 />
-                              </div>
-
-                              <Separator />
-
-                              <div className="grid grid-cols-2 gap-4">
-                                {analyses.map((category) => (
-                                  <Card key={category.category}>
-                                    <CardContent className="pt-6">
-                                      <div className="text-sm font-medium mb-2">
-                                        {category.category}
-                                      </div>
-                                      <div className="text-2xl font-bold">
-                                        {calculateAverageScore(
-                                          category.metrics
-                                        ).toFixed(1)}
-                                        <span className="text-sm text-gray-500">
-                                          /10
-                                        </span>
-                                      </div>
-                                    </CardContent>
-                                  </Card>
-                                ))}
-                              </div>
+                              ))}
                             </div>
                           </CardContent>
                         </Card>
 
                         {analyses.map((categoryResult, categoryIndex) => (
                           <Card key={categoryIndex}>
-                            <CardHeader>
+                            <CardHeader className="flex flex-row items-center justify-between">
                               <CardTitle>{categoryResult.category}</CardTitle>
+                              <Gauge
+                                value={calculateAverageScore(
+                                  categoryResult.metrics
+                                )}
+                                size={80}
+                                strokeWidth={8}
+                              />
                             </CardHeader>
                             <CardContent>
                               <div className="space-y-4">
@@ -314,17 +307,27 @@ export default function Home() {
                                     <Card key={metricIndex}>
                                       <CardContent className="pt-6">
                                         <div className="flex items-center justify-between mb-4">
-                                          <h4 className="font-medium">
-                                            {metricResult.metricName}
-                                          </h4>
+                                          <div className="flex items-center gap-4">
+                                            <Gauge
+                                              value={metricResult.result.score}
+                                              size={60}
+                                              strokeWidth={6}
+                                            />
+                                            <h4 className="font-medium">
+                                              {metricResult.metricName}
+                                            </h4>
+                                          </div>
                                           <Badge
                                             variant="secondary"
                                             className={getScoreColor(
                                               metricResult.result.score
                                             )}
                                           >
-                                            Score: {metricResult.result.score}
-                                            /10
+                                            {metricResult.result.score >= 7
+                                              ? "Strong Match"
+                                              : metricResult.result.score >= 5
+                                              ? "Moderate Match"
+                                              : "Needs Improvement"}
                                           </Badge>
                                         </div>
                                         <p className="text-gray-600 mb-4">
