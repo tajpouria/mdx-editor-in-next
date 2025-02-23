@@ -4,11 +4,11 @@ Refine the following resume to enhance its use of industry and role-specific jar
 
 **Resume Text:**
 
-{resume_text}
+{{resume_text}}
 
 **Job Description:**
 
-{job_description_text}
+{{job_description_text}}
 
 **Instructions for AI:**
 

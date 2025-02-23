@@ -1,11 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import useLocalStorage from "use-local-storage";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 const EditorComp = dynamic(() => import("./EditorComponent"), { ssr: false });
+
+interface MetricResult {
+  metricName: string;
+  result: {
+    score: number;
+    reason: string;
+    tips: string[];
+  };
+}
+
+interface CategoryResult {
+  category: string;
+  metrics: MetricResult[];
+}
+
+interface Analyses {
+  categories: CategoryResult[];
+}
 
 export default function Home() {
   const [analyzing, setAnalyzing] = useState(false);
@@ -14,7 +32,14 @@ export default function Home() {
     ""
   );
   const [resume, setResume] = useLocalStorage("resume", "");
-  const [analyses, setAnalyses] = useLocalStorage("analyses", []);
+  const [analyses, setAnalyses] = useLocalStorage<Analyses | null>(
+    "analyses",
+    null
+  );
+
+  React.useEffect(() => {
+    console.log(analyses);
+  }, []);
 
   const runAnalysis = async () => {
     if (!jobDescription || !resume) {
@@ -60,7 +85,9 @@ export default function Home() {
             <EditorComp markdown={resume} setMarkdown={setResume} />
           </div>
           <div className="col-span-1 border-2 border-solid overflow-auto">
-            <h1>Job Description:</h1>
+            <h1>
+              <b>Job Description</b>
+            </h1>
             <textarea
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}

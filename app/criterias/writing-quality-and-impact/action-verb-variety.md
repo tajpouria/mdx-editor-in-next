@@ -4,6 +4,10 @@
 
 Your task is to evaluate the **Experience** section of the provided resume text for the variety and strength of action verbs used to describe responsibilities and achievements.
 
+**Resume Text:**
+
+{{resume_text}}
+
 **Evaluation Criteria:**
 
 1. **Action Verb Variety and Strength Score (1-10):**

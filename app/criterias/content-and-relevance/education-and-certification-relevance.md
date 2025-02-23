@@ -1,10 +1,10 @@
 Evaluate the resume Education and Certifications section for its relevance to the following Job Description.
 
 **Resume Text:**
-{resume_text}
+{{resume_text}}
 
 **Job Description:**
-{job_description_text}
+{{job_description_text}}
 
 **Instructions for AI:**
 

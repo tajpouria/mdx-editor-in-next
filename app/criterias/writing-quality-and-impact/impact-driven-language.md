@@ -2,7 +2,7 @@ Evaluate the resume text below for the effective use of **impact-driven language
 
 **Resume Text:**
 
-{resume_text}
+{{resume_text}}
 
 **Instructions for AI:**
 

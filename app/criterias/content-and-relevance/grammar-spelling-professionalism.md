@@ -1,6 +1,8 @@
 **Evaluate the resume for grammar, spelling, and overall professionalism in writing style, providing mistake-based improvement tips.**
 
-**Resume Text:** [PASTE RESUME TEXT HERE]
+**Resume Text:**
+
+{{resume_text}}
 
 **Instructions for AI:**
 

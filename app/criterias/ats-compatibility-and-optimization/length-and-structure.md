@@ -2,11 +2,11 @@ Evaluate the provided resume text for appropriate length and structural balance,
 
 **Resume Text:**
 
-{resume_text}
+{{resume_text}}
 
 **Target Job Description:**
 
-{job_description_text}
+{{job_description_text}}
 
 **Instructions for AI:**
 

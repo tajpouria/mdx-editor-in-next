@@ -4,7 +4,7 @@
 
 **Resume Text:**
 
-{resume_text}
+{{resume_text}}
 
 **Instructions for AI Evaluator:**
 
