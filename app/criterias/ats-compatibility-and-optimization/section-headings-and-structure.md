@@ -2,11 +2,11 @@
 
 **Resume Text:**
 
-{{resume_text}}
+<%= resume_text %>
 
 **Job Description:**
 
-{{job_description_text}}
+<%= job_description_text %>
 
 **Instructions for AI:**
 
@@ -38,4 +38,4 @@
 
 Score: [Score 1-10]
 Reason: [Detailed explanation of the score - addressing present/missing sections, clarity, labeling, and structure]
-Tips for Improvement: [Actionable tips for improving section headings and structure, including specific section suggestions, clarity improvements, structural reorganization advice, and examples of stronger headings]
+Tips for Improvement: [Actionable tips for improving section headings and structure, including specific section suggestions, clarity improvements, structural reorganization advice, and examples of stronger headings] (Use simple text formatting no markdown or HTML or special characters)

@@ -4,7 +4,7 @@
 
 **Resume Text:**
 
-{{resume_text}}
+<%= resume_text %>
 
 **Instructions for AI Evaluator:**
 
@@ -47,4 +47,4 @@
 **Desired Output Format:**
 Score: [Score 1-10]
 Reason: [Detailed explanation of the score, addressing ATS Compatibility and Human Readability aspects as outlined above]
-Tips for Improvement: [At least three actionable and specific tips for improving formatting and readability]
+Tips for Improvement: [At least three actionable and specific tips for improving formatting and readability] (Use simple text formatting no markdown or HTML or special characters)

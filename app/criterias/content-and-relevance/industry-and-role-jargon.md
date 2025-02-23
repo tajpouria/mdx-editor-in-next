@@ -4,11 +4,11 @@ Refine the following resume to enhance its use of industry and role-specific jar
 
 **Resume Text:**
 
-{{resume_text}}
+<%= resume_text %>
 
 **Job Description:**
 
-{{job_description_text}}
+<%= job_description_text %>
 
 **Instructions for AI:**
 
@@ -37,4 +37,4 @@ Your goal is to evaluate and improve the resume's strategic use of industry and 
 
 Score: [Score 1-10]
 Reason: [Detailed explanation of the score, including strengths, weaknesses, and appropriateness assessment]
-Improvement Tips: [At least 3 actionable and specific tips with jargon term suggestions, placement advice, and refinement guidance]
+Improvement Tips: [At least 3 actionable and specific tips with jargon term suggestions, placement advice, and refinement guidance] (Use simple text formatting no markdown or HTML or special characters)

@@ -4,11 +4,11 @@
 
 - **Resume Text:**
 
-  {{resume_text}}
+  <%= resume_text %>
 
 - **Job Description:**
 
-  {{job_description_text}}
+  <%= job_description_text %>
 
 **Instructions for AI:**
 
@@ -41,4 +41,4 @@ Your task is to analyze the provided resume against the job description and prov
 
 Score: [Score 1-10]
 Rationale: [Detailed explanation of the score, addressing skill overlap, missing skills, and prioritization]
-Improvement Tips: [Actionable, specific tips for skill enhancement and prioritization, including section and skill recommendations]
+Improvement Tips: [Actionable, specific tips for skill enhancement and prioritization, including section and skill recommendations] (Use simple text formatting no markdown or HTML or special characters)

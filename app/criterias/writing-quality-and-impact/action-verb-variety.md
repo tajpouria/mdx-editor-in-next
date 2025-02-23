@@ -6,7 +6,7 @@ Your task is to evaluate the **Experience** section of the provided resume text 
 
 **Resume Text:**
 
-{{resume_text}}
+<%= resume_text %>
 
 **Evaluation Criteria:**
 
@@ -42,4 +42,4 @@ Your task is to evaluate the **Experience** section of the provided resume text 
 
 Score: [Score 1-10]
 Reason: [Structured explanation of the score, addressing Strengths, Weaknesses, and Variety]
-Tips for Improvement: [Categorized actionable tips for improving action verb variety and strength]
+Tips for Improvement: [Categorized actionable tips for improving action verb variety and strength] (Use simple text formatting no markdown or HTML or special characters)

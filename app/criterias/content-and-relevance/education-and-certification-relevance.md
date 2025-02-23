@@ -1,10 +1,10 @@
 Evaluate the resume Education and Certifications section for its relevance to the following Job Description.
 
 **Resume Text:**
-{{resume_text}}
+<%= resume_text %>
 
 **Job Description:**
-{{job_description_text}}
+<%= job_description_text %>
 
 **Instructions for AI:**
 
@@ -29,4 +29,4 @@ Evaluate the resume Education and Certifications section for its relevance to th
 **Desired Output Format:**
 Score: [Score 1-10]
 Reason: [Detailed explanation of the score as outlined in instruction 2]
-Tips for Improvement: [Actionable tips categorized under Content Enhancement and Presentation/Emphasis as outlined in instruction 3]
+Tips for Improvement: [Actionable tips categorized under Content Enhancement and Presentation/Emphasis as outlined in instruction 3] (Use simple text formatting no markdown or HTML or special characters)

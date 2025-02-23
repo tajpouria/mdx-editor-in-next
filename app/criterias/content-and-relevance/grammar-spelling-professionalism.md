@@ -2,7 +2,7 @@
 
 **Resume Text:**
 
-{{resume_text}}
+<%= resume_text %>
 
 **Instructions for AI:**
 
@@ -36,7 +36,7 @@
 **Desired Output Format:**
 Score: [Score 1-10]
 Reason: [Detailed explanation including types of errors and professionalism concerns]
-Mistake-Based Tips for Improvement:
+Mistake-Based Tips for Improvement: (Use simple text formatting no markdown or HTML or special characters)
 
 - [Tip 1: Addressing Error Type 1]
 - [Tip 2: Addressing Error Type 2]

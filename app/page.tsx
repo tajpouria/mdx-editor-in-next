@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import useLocalStorage from "use-local-storage";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
@@ -21,25 +20,40 @@ interface CategoryResult {
   metrics: MetricResult[];
 }
 
-interface Analyses {
-  categories: CategoryResult[];
-}
-
 export default function Home() {
   const [analyzing, setAnalyzing] = useState(false);
-  const [jobDescription, setJobDescription] = useLocalStorage(
-    "jobDescription",
-    ""
-  );
-  const [resume, setResume] = useLocalStorage("resume", "");
-  const [analyses, setAnalyses] = useLocalStorage<Analyses | null>(
-    "analyses",
-    null
-  );
+  const [jobDescription, setJobDescription] = useState("");
+  const [resume, setResume] = useState("");
+  const [analyses, setAnalyses] = useState<CategoryResult[] | null>([]);
+  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => {
-    console.log(analyses);
+  useEffect(() => {
+    setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      const storedJobDescription = localStorage.getItem("jobDescription");
+      const storedResume = localStorage.getItem("resume");
+      const storedAnalyses = localStorage.getItem("analyses");
+
+      if (storedJobDescription) setJobDescription(storedJobDescription);
+      if (storedResume) setResume(storedResume);
+      if (storedAnalyses) setAnalyses(JSON.parse(storedAnalyses));
+    }
+  }, [mounted]);
+
+  useEffect(() => {
+    if (mounted) {
+      localStorage.setItem("jobDescription", jobDescription);
+      localStorage.setItem("resume", resume);
+      localStorage.setItem("analyses", JSON.stringify(analyses));
+    }
+  }, [jobDescription, resume, analyses, mounted]);
+
+  useEffect(() => {
+    console.log(analyses);
+  }, [analyses]);
 
   const runAnalysis = async () => {
     if (!jobDescription || !resume) {
@@ -70,6 +84,29 @@ export default function Home() {
     }
   };
 
+  const getScoreColor = (score: number) => {
+    if (score >= 9) return "bg-green-300";
+    if (score >= 7) return "bg-green-200";
+    if (score >= 5) return "bg-yellow-200";
+    if (score >= 3) return "bg-orange-200";
+    return "bg-red-200";
+  };
+
+  const calculateAverageScore = (metrics: MetricResult[]) => {
+    if (!metrics || metrics.length === 0) return 0;
+    const totalScore = metrics.reduce(
+      (sum, metric) => sum + metric.result.score,
+      0
+    );
+    return totalScore / metrics.length;
+  };
+
+  const calculateOverallAverage = (analyses: CategoryResult[] | null) => {
+    if (!analyses || analyses.length === 0) return 0;
+    const allMetrics = analyses.flatMap((category) => category.metrics);
+    return calculateAverageScore(allMetrics);
+  };
+
   return (
     <>
       {analyzing && (
@@ -82,7 +119,9 @@ export default function Home() {
       <Suspense fallback={null}>
         <div className="grid grid-cols-3 h-screen">
           <div className="col-span-2 border-2 overflow-auto">
-            <EditorComp markdown={resume} setMarkdown={setResume} />
+            {mounted && (
+              <EditorComp markdown={resume} setMarkdown={setResume} />
+            )}
           </div>
           <div className="col-span-1 border-2 border-solid overflow-auto">
             <h1>
@@ -99,6 +138,69 @@ export default function Home() {
             >
               Analyze
             </button>
+
+            {Array.isArray(analyses) && (
+              <div className="mt-4 p-4">
+                <h2 className="text-xl font-semibold mb-2">Analyses</h2>
+
+                {/* Summary of Scores */}
+                <div className="mb-4">
+                  <h3 className="text-lg font-medium mb-1">Summary</h3>
+                  <p>
+                    Overall Average Score:{" "}
+                    {calculateOverallAverage(analyses).toFixed(2)}/10
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="font-semibold">Category</div>
+                    <div className="font-semibold">Average Score</div>
+                    {analyses.map((category) => (
+                      <React.Fragment key={category.category}>
+                        <div>{category.category}</div>
+                        <div>
+                          {calculateAverageScore(category.metrics).toFixed(2)}
+                          /10
+                        </div>
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Individual Category Analyses */}
+                {analyses.map((categoryResult, categoryIndex) => (
+                  <div key={categoryIndex} className="mb-4">
+                    <h3 className="text-lg font-medium mb-1">
+                      {categoryResult.category} (Avg:{" "}
+                      {calculateAverageScore(categoryResult.metrics).toFixed(2)}
+                      /10)
+                    </h3>
+                    {categoryResult.metrics.map((metricResult, metricIndex) => (
+                      <div
+                        key={metricIndex}
+                        className={`border p-2 rounded mb-2 ${getScoreColor(
+                          metricResult.result.score
+                        )}`}
+                      >
+                        <h4 className="font-semibold">
+                          {metricResult.metricName}
+                        </h4>
+                        <p>Score: {metricResult.result.score}/10</p>
+                        <p>Reason: {metricResult.result.reason}</p>
+                        {metricResult.result.tips.length > 0 && (
+                          <div>
+                            <p className="font-medium">Tips:</p>
+                            <ul className="list-disc list-inside">
+                              {metricResult.result.tips.map((tip, tipIndex) => (
+                                <li key={tipIndex}>{tip}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </Suspense>

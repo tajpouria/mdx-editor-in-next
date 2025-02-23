@@ -2,7 +2,7 @@ Evaluate the resume text below for the effective use of **impact-driven language
 
 **Resume Text:**
 
-{{resume_text}}
+<%= resume_text %>
 
 **Instructions for AI:**
 
@@ -28,4 +28,4 @@ Evaluate the resume text below for the effective use of **impact-driven language
 **Desired Output Format:**
 Score: [Score 1-10]
 Reason: [Explanation of score with positive and negative examples, and comment on overall balance]
-Tips for Improvement: [3-5 actionable tips categorized under "Focus on Results," "Quantify Impact," "Use Strong Action Verbs," "Rephrase Task-Focused Language"]
+Tips for Improvement: [3-5 actionable tips categorized under "Focus on Results," "Quantify Impact," "Use Strong Action Verbs," "Rephrase Task-Focused Language"] (Use simple text formatting no markdown or HTML or special characters)

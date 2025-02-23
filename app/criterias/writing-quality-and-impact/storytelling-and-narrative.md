@@ -4,7 +4,7 @@
 
 **Resume Text:**
 
-{{resume_text}}
+<%= resume_text %>
 
 **Instructions for AI:**
 
@@ -38,4 +38,4 @@
 
 Score: [Narrative Score 1-10]
 Reason: [Detailed explanation addressing the points above]
-Tips for Improvement: [3-5 actionable and specific improvement tips]
+Tips for Improvement: [3-5 actionable and specific improvement tips] (Use simple text formatting no markdown or HTML or special characters)

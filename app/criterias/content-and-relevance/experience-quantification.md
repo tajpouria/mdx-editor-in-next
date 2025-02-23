@@ -4,11 +4,11 @@
 
 - **Resume Text:**
 
-{{resume_text}}
+<%= resume_text %>
 
 - **Job Description:**
 
-{{job_description_text}}
+<%= job_description_text %>
 
 **Instructions for AI:**
 
@@ -37,4 +37,4 @@
 
 Score: [Score 1-10]
 Reason: [Concise justification of the score]
-Tips for Improvement: [Actionable, specific, and relevant recommendations]
+Tips for Improvement: [Actionable, specific, and relevant recommendations] (Use simple text formatting no markdown or HTML or special characters)

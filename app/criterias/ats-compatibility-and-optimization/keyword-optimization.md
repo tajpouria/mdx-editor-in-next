@@ -2,11 +2,11 @@ Analyze the resume for keyword optimization in relation to the job description t
 
 **Resume Text:**
 
-{{resume_text}}
+<%= resume_text %>
 
 **Job Description:**
 
-{{job_description_text}}
+<%= job_description_text %>
 
 **Instructions for AI:**
 
@@ -30,13 +30,4 @@ Analyze the resume for keyword optimization in relation to the job description t
 **Desired Output Format:**
 Score: [Score 1-10]
 Reason: [Detailed, multi-faceted explanation of the score covering relevance, density, integration quality, strategic placement, categorized missing keywords, and contextual understanding]
-Tips for Improvement: [Actionable and targeted recommendations including specific keyword suggestions, section-specific strategies, natural integration techniques with examples, and an emphasis on iterative optimization]
-
-**Key Improvements in this Enhanced Prompt:**
-
-- **Emphasis on Strategic Placement:** Explicitly asks the AI to consider _where_ keywords are placed in the resume.
-- **Quality of Integration:** Focuses on _how_ well keywords are integrated, not just quantity.
-- **Categorized Missing Keywords:** Requests categorization of missing keywords for more targeted improvement tips.
-- **Contextual Understanding:** Encourages the AI to demonstrate an understanding of the job requirements beyond just keyword matching.
-- **Actionable and Targeted Tips:** Tips are more specific, suggesting _precise_ keywords, _optimal sections_, and providing _examples_ of natural integration.
-- **Iterative Approach:** Promotes an iterative optimization process.
+Tips for Improvement: [Actionable and targeted recommendations including specific keyword suggestions, section-specific strategies, natural integration techniques with examples, and an emphasis on iterative optimization] (Use simple text formatting no markdown or HTML or special characters)
