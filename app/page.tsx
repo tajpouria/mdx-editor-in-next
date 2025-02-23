@@ -3,6 +3,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  ChevronLeft,
+  ChevronRight,
+  BarChart,
+  FileText,
+  Briefcase,
+  Loader2,
+} from "lucide-react";
 
 const EditorComp = dynamic(() => import("./EditorComponent"), { ssr: false });
 
@@ -26,9 +41,10 @@ export default function Home() {
   const [resume, setResume] = useState("");
   const [analyses, setAnalyses] = useState<CategoryResult[] | null>([]);
   const [mounted, setMounted] = useState(false);
-  const [isRightBarExpanded, setIsRightBarExpanded] = useState(false);
-  const [leftPanelWidth, setLeftPanelWidth] = useState("66.66%");
+  const [isRightBarExpanded, setIsRightBarExpanded] = useState(true);
+  const [leftPanelWidth, setLeftPanelWidth] = useState("50%");
   const [isResizing, setIsResizing] = useState(false);
+  const [activeTab, setActiveTab] = useState("description");
   const dividerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,13 +71,9 @@ export default function Home() {
     }
   }, [jobDescription, resume, analyses, mounted]);
 
-  useEffect(() => {
-    console.log(analyses);
-  }, [analyses]);
-
   const runAnalysis = async () => {
     if (!jobDescription || !resume) {
-      alert("Please enter job description and resume");
+      alert("Please enter both job description and resume");
       return;
     }
 
@@ -79,9 +91,9 @@ export default function Home() {
       });
       const data = await res.json();
       setAnalyses(data);
-      setAnalyzing(false);
+      setActiveTab("analysis");
     } catch (e) {
-      alert("An error occurred. Please check the console for more details.");
+      alert("An error occurred. Please try again.");
       console.error(e);
     } finally {
       setAnalyzing(false);
@@ -89,11 +101,11 @@ export default function Home() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 9) return "bg-green-300";
-    if (score >= 7) return "bg-green-100";
-    if (score >= 5) return "bg-yellow-100";
-    if (score >= 3) return "bg-orange-100";
-    return "bg-red-200";
+    if (score >= 9) return "bg-green-100 text-green-800";
+    if (score >= 7) return "bg-blue-100 text-blue-800";
+    if (score >= 5) return "bg-yellow-100 text-yellow-800";
+    if (score >= 3) return "bg-orange-100 text-orange-800";
+    return "bg-red-100 text-red-800";
   };
 
   const calculateAverageScore = (metrics: MetricResult[]) => {
@@ -111,10 +123,6 @@ export default function Home() {
     return calculateAverageScore(allMetrics);
   };
 
-  const toggleRightBar = () => {
-    setIsRightBarExpanded(!isRightBarExpanded);
-  };
-
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsResizing(true);
     e.preventDefault();
@@ -122,8 +130,10 @@ export default function Home() {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isResizing) return;
-    const newLeftPanelWidth = `${(e.clientX / window.innerWidth) * 100}%`;
-    setLeftPanelWidth(newLeftPanelWidth);
+    const percentage = (e.clientX / window.innerWidth) * 100;
+    if (percentage > 30 && percentage < 70) {
+      setLeftPanelWidth(`${percentage}%`);
+    }
   };
 
   const handleMouseUp = () => {
@@ -132,135 +142,244 @@ export default function Home() {
 
   useEffect(() => {
     if (isResizing) {
-      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mousemove", handleMouseMove as any);
       window.addEventListener("mouseup", handleMouseUp);
-    } else {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
     }
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mousemove", handleMouseMove as any);
       window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isResizing]);
 
   return (
-    <>
+    <div className="h-screen bg-gray-50">
       {analyzing && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-lg">
-            <p className="text-lg">Analyzing...</p>
-          </div>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center">
+          <Card className="w-64">
+            <CardContent className="py-6">
+              <div className="flex flex-col items-center gap-4">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-lg font-medium">Analyzing Resume...</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
-      <Suspense fallback={null}>
+
+      <div
+        className="flex h-full"
+        style={{ gridTemplateColumns: `${leftPanelWidth} auto 1fr` }}
+      >
         <div
-          className="grid h-screen"
-          style={{ gridTemplateColumns: `${leftPanelWidth} auto 1fr` }}
+          className="w-full h-full bg-white shadow-lg overflow-hidden"
+          style={{ width: leftPanelWidth }}
         >
-          <div className="border-2 overflow-auto">
-            {mounted && (
-              <EditorComp markdown={resume} setMarkdown={setResume} />
-            )}
-          </div>
-          <div
-            ref={dividerRef}
-            className="w-2 cursor-col-resize bg-gray-300"
-            onMouseDown={handleMouseDown}
-          ></div>
-          <div
-            className={`border-2 border-solid overflow-auto transition-all duration-300 relative ${
-              isRightBarExpanded ? "col-span-1" : ""
-            }`}
-          >
-            <button
-              onClick={toggleRightBar}
-              className="absolute top-2 right-2 bg-gray-200 p-2 rounded-full"
-            >
-              {isRightBarExpanded ? "<" : ">"}
-            </button>
-            <h1>
-              <b>Job Description</b>
-            </h1>
-            <textarea
-              value={jobDescription}
-              onChange={(e) => setJobDescription(e.target.value)}
-              className="w-full h-96 border-2 border-solid"
-            />
-            <button
-              onClick={runAnalysis}
-              className="bg-white w-full hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-            >
-              Analyze
-            </button>
+          <Card className="h-full border-0">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Resume Editor
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="h-[calc(100%-5rem)]">
+              {mounted && (
+                <EditorComp markdown={resume} setMarkdown={setResume} />
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
-            {Array.isArray(analyses) && (
-              <div className="mt-4 p-4">
-                <h2 className="text-xl font-semibold mb-2">Analyses</h2>
-
-                <div className="mb-4">
-                  <h3 className="text-lg font-medium mb-1">Summary</h3>
-                  <p>
-                    Overall Average Score:{" "}
-                    {calculateOverallAverage(analyses).toFixed(2)}/10
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="font-semibold">Category</div>
-                    <div className="font-semibold">Average Score</div>
-                    {analyses.map((category) => (
-                      <React.Fragment key={category.category}>
-                        <div>{category.category}</div>
-                        <div>
-                          {calculateAverageScore(category.metrics).toFixed(2)}
-                          /10
-                        </div>
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </div>
-
-                {analyses.map((categoryResult, categoryIndex) => (
-                  <div key={categoryIndex} className="mb-4">
-                    <h3 className="text-lg font-medium mb-1">
-                      {categoryResult.category} (Avg:{" "}
-                      {calculateAverageScore(categoryResult.metrics).toFixed(2)}
-                      /10)
-                    </h3>
-                    {categoryResult.metrics.map((metricResult, metricIndex) => (
-                      <div
-                        key={metricIndex}
-                        className={`border p-2 rounded mb-2 ${getScoreColor(
-                          metricResult.result.score
-                        )}`}
-                      >
-                        <h4 className="font-semibold">
-                          {metricResult.metricName}
-                        </h4>
-                        <p>
-                          <b>Score:</b> {metricResult.result.score}/10
-                        </p>
-                        <p>
-                          <b>Reason:</b> {metricResult.result.reason}
-                        </p>
-                        {metricResult.result.tips.length > 0 && (
-                          <div>
-                            <p className="font-medium">Tips:</p>
-                            <ul className="list-disc list-inside">
-                              {metricResult.result.tips.map((tip, tipIndex) => (
-                                <li key={tipIndex}>{tip}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            )}
+        <div
+          ref={dividerRef}
+          className="w-1 bg-gray-200 hover:bg-blue-400 transition-colors cursor-col-resize flex items-center justify-center"
+          onMouseDown={handleMouseDown}
+        >
+          <div className="w-4 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+            <ChevronLeft className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4" />
           </div>
         </div>
-      </Suspense>
-    </>
+
+        <div className="flex-1 h-full overflow-hidden">
+          <Card className="h-full border-0">
+            <CardHeader className="pb-4">
+              <CardTitle>Job Analysis Dashboard</CardTitle>
+            </CardHeader>
+            <CardContent className="h-[calc(100%-5rem)]">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="h-full"
+              >
+                <TabsList className="mb-4">
+                  <TabsTrigger
+                    value="description"
+                    className="flex items-center gap-2"
+                  >
+                    <Briefcase className="h-4 w-4" />
+                    Job Description
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="analysis"
+                    className="flex items-center gap-2"
+                  >
+                    <BarChart className="h-4 w-4" />
+                    Analysis Results
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent
+                  value="description"
+                  className="h-[calc(100%-3rem)]"
+                >
+                  <div className="flex flex-col h-full gap-4">
+                    <textarea
+                      value={jobDescription}
+                      onChange={(e) => setJobDescription(e.target.value)}
+                      placeholder="Paste job description here..."
+                      className="flex-1 p-4 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 resize-none"
+                    />
+                    <Button onClick={runAnalysis} className="w-full" size="lg">
+                      {analyzing ? (
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      ) : (
+                        <BarChart className="h-4 w-4 mr-2" />
+                      )}
+                      Analyze Resume
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="analysis" className="h-[calc(100%-3rem)]">
+                  <ScrollArea className="h-full pr-4">
+                    {Array.isArray(analyses) && analyses.length > 0 ? (
+                      <div className="space-y-6">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle>Overall Analysis</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-4">
+                              <div>
+                                <div className="flex justify-between mb-2">
+                                  <span className="font-medium">
+                                    Match Score
+                                  </span>
+                                  <span className="font-medium">
+                                    {calculateOverallAverage(analyses).toFixed(
+                                      1
+                                    )}
+                                    /10
+                                  </span>
+                                </div>
+                                <Progress
+                                  value={calculateOverallAverage(analyses) * 10}
+                                />
+                              </div>
+
+                              <Separator />
+
+                              <div className="grid grid-cols-2 gap-4">
+                                {analyses.map((category) => (
+                                  <Card key={category.category}>
+                                    <CardContent className="pt-6">
+                                      <div className="text-sm font-medium mb-2">
+                                        {category.category}
+                                      </div>
+                                      <div className="text-2xl font-bold">
+                                        {calculateAverageScore(
+                                          category.metrics
+                                        ).toFixed(1)}
+                                        <span className="text-sm text-gray-500">
+                                          /10
+                                        </span>
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+                                ))}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        {analyses.map((categoryResult, categoryIndex) => (
+                          <Card key={categoryIndex}>
+                            <CardHeader>
+                              <CardTitle>{categoryResult.category}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="space-y-4">
+                                {categoryResult.metrics.map(
+                                  (metricResult, metricIndex) => (
+                                    <Card key={metricIndex}>
+                                      <CardContent className="pt-6">
+                                        <div className="flex items-center justify-between mb-4">
+                                          <h4 className="font-medium">
+                                            {metricResult.metricName}
+                                          </h4>
+                                          <Badge
+                                            variant="secondary"
+                                            className={getScoreColor(
+                                              metricResult.result.score
+                                            )}
+                                          >
+                                            Score: {metricResult.result.score}
+                                            /10
+                                          </Badge>
+                                        </div>
+                                        <p className="text-gray-600 mb-4">
+                                          {metricResult.result.reason}
+                                        </p>
+                                        {metricResult.result.tips.length >
+                                          0 && (
+                                          <div className="bg-gray-50 p-4 rounded-lg">
+                                            <p className="font-medium mb-2">
+                                              Improvement Tips:
+                                            </p>
+                                            <ul className="list-disc list-inside space-y-1">
+                                              {metricResult.result.tips.map(
+                                                (tip, tipIndex) => (
+                                                  <li
+                                                    key={tipIndex}
+                                                    className="text-gray-600"
+                                                  >
+                                                    {tip}
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          </div>
+                                        )}
+                                      </CardContent>
+                                    </Card>
+                                  )
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="h-full flex items-center justify-center">
+                        <div className="text-center">
+                          <BarChart className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                          <p className="text-lg font-medium text-gray-600">
+                            No analysis results yet
+                          </p>
+                          <p className="text-gray-500">
+                            Submit your resume and job description to get
+                            started
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </ScrollArea>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 }

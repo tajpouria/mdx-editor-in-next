@@ -37,5 +37,5 @@
 **Desired Output Format:**
 
 Score: [Narrative Score 1-10]
-Reason: [Detailed explanation addressing the points above]
+Reason: [Detailed explanation addressing the points above] (Use simple text formatting no markdown or HTML or special characters)
 Tips for Improvement: [3-5 actionable and specific improvement tips] (Use simple text formatting no markdown or HTML or special characters)

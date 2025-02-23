@@ -36,5 +36,5 @@
 **Desired Output Format:**
 
 Score: [Score 1-10]
-Reason: [Concise justification of the score]
+Reason: [Concise justification of the score] (Use simple text formatting no markdown or HTML or special characters)
 Tips for Improvement: [Actionable, specific, and relevant recommendations] (Use simple text formatting no markdown or HTML or special characters)
