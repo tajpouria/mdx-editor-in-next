@@ -25,6 +25,39 @@ interface Category {
 
 export async function POST(request: NextRequest) {
   try {
+    const authorizationHeader = request.headers.get("Authorization");
+
+    if (!authorizationHeader) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const [authType, authToken] = authorizationHeader.split(" ");
+
+    if (authType !== "Basic" || !authToken) {
+      return NextResponse.json(
+        { error: "Invalid Authorization header" },
+        { status: 401 }
+      );
+    }
+
+    const decodedToken = atob(authToken);
+    const [email, password] = decodedToken.split(":");
+
+    const expectedEmail = process.env.AUTH_EMAIL;
+    const expectedPassword = process.env.AUTH_PASSWORD;
+
+    if (!expectedEmail || !expectedPassword) {
+      console.error("Missing authentication environment variables.");
+      return NextResponse.json(
+        { error: "Internal Server Error" },
+        { status: 500 }
+      );
+    }
+
+    if (email !== expectedEmail || password !== expectedPassword) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const data: Data = await request.json();
     if (!data.jobDescription || !data.resume) {
       return NextResponse.json(
@@ -74,6 +107,14 @@ export async function POST(request: NextRequest) {
 
     criteriaData.sort((a, b) => a.category.localeCompare(b.category));
 
+    const usages: {
+      [key: string]: {
+        promptTokens: number;
+        completionTokens: number;
+        totalTokens: number;
+      };
+    } = {};
+
     const categoryResults = await Promise.all(
       criteriaData.map(async (category) => {
         const metricResults = await Promise.all(
@@ -93,6 +134,7 @@ export async function POST(request: NextRequest) {
               }),
               prompt,
             });
+            usages[metric.name] = result.usage;
 
             return {
               metricName: metric.name,
@@ -106,6 +148,20 @@ export async function POST(request: NextRequest) {
           metrics: metricResults,
         };
       })
+    );
+
+    console.log("Usages:", usages);
+    console.log(
+      "Overall Usage:",
+      Object.values(usages).reduce(
+        (acc, usage) => {
+          acc.promptTokens += usage.promptTokens;
+          acc.completionTokens += usage.completionTokens;
+          acc.totalTokens += usage.totalTokens;
+          return acc;
+        },
+        { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
+      )
     );
 
     return NextResponse.json(categoryResults, { status: 200 });

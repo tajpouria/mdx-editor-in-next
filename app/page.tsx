@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { ScoreSummaryCard, Gauge } from "@/components/custom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -17,6 +18,7 @@ import {
   FileText,
   Briefcase,
   Loader2,
+  LogOut,
 } from "lucide-react";
 
 const EditorComp = dynamic(() => import("./EditorComponent"), { ssr: false });
@@ -36,8 +38,94 @@ interface CategoryResult {
   metrics: MetricResult[];
 }
 
+interface LoginFormProps {
+  onLoginSuccess: () => void;
+}
+
+// Login Form Component
+function LoginForm({ onLoginSuccess }: LoginFormProps) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("userEmail", email);
+        onLoginSuccess();
+      } else {
+        setError(data.message || "Login failed");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Login to Resume Analyzer</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 // Main Component
 export default function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [jobDescription, setJobDescription] = useState("");
   const [resume, setResume] = useState("");
@@ -50,10 +138,12 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true);
+    const authToken = localStorage.getItem("authToken");
+    setIsAuthenticated(!!authToken);
   }, []);
 
   useEffect(() => {
-    if (mounted) {
+    if (mounted && isAuthenticated) {
       const storedJobDescription = localStorage.getItem("jobDescription");
       const storedResume = localStorage.getItem("resume");
       const storedAnalyses = localStorage.getItem("analyses");
@@ -62,15 +152,23 @@ export default function Home() {
       if (storedResume) setResume(storedResume);
       if (storedAnalyses) setAnalyses(JSON.parse(storedAnalyses));
     }
-  }, [mounted]);
+  }, [mounted, isAuthenticated]);
 
   useEffect(() => {
-    if (mounted) {
+    if (mounted && isAuthenticated) {
       localStorage.setItem("jobDescription", jobDescription);
       localStorage.setItem("resume", resume);
       localStorage.setItem("analyses", JSON.stringify(analyses));
     }
-  }, [jobDescription, resume, analyses, mounted]);
+  }, [jobDescription, resume, analyses, mounted, isAuthenticated]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setIsAuthenticated(false);
+    setJobDescription("");
+    setResume("");
+    setAnalyses(null);
+  };
 
   const runAnalysis = async () => {
     if (!jobDescription || !resume) {
@@ -80,16 +178,24 @@ export default function Home() {
 
     setAnalyzing(true);
     try {
+      const authToken = localStorage.getItem("authToken");
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Basic ${authToken}`,
         },
         body: JSON.stringify({
           jobDescription,
           resume,
         }),
       });
+
+      if (res.status === 401) {
+        handleLogout();
+        return;
+      }
+
       const data = await res.json();
       setAnalyses(data);
       setActiveTab("analysis");
@@ -152,8 +258,23 @@ export default function Home() {
     };
   }, [isResizing]);
 
+  if (!isAuthenticated) {
+    return <LoginForm onLoginSuccess={() => setIsAuthenticated(true)} />;
+  }
+
   return (
     <div className="h-screen bg-gray-50">
+      <div className="absolute top-4 right-4 z-10">
+        <Button
+          variant="outline"
+          onClick={handleLogout}
+          className="flex items-center gap-2"
+        >
+          <LogOut className="h-4 w-4" />
+          Logout
+        </Button>
+      </div>
+
       {analyzing && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
           <Card className="w-64">
@@ -169,17 +290,17 @@ export default function Home() {
 
       <div className="flex h-full">
         <div
-          className="w-full h-full bg-white shadow-lg overflow-auto"
+          className="w-full h-full bg-white shadow-lg overflow-hidden"
           style={{ width: leftPanelWidth }}
         >
           <Card className="h-full border-0">
             <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center">
                 <FileText className="h-5 w-5" />
                 Resume Editor
               </CardTitle>
             </CardHeader>
-            <CardContent className="h-[calc(100%-5rem)]">
+            <CardContent className="h-[calc(100%-5rem)] overflow-auto">
               {mounted && (
                 <EditorComp markdown={resume} setMarkdown={setResume} />
               )}
