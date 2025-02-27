@@ -80,10 +80,10 @@ export async function POST(request: NextRequest) {
         const metrics: Metric[] = [];
 
         for (const file of files) {
-          if (file.endsWith(".md")) {
+          if (file.endsWith(".cri.md")) {
             const filePath = path.join(categoryPath, file);
             const fileContent = await fs.readFile(filePath, "utf-8");
-            const fileName = file.replace(".md", "").replace(/-/g, " ");
+            const fileName = file.replace(".cri.md", "").replace(/-/g, " ");
 
             metrics.push({
               name: fileName
