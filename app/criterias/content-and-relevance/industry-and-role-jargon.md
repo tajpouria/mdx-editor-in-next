@@ -36,5 +36,5 @@ Your goal is to evaluate and improve the resume's strategic use of industry and 
 **Desired Output Format:**
 
 Score: [Score 1-10]
-Reason: [Detailed explanation of the score, including strengths, weaknesses, and appropriateness assessment] (Use markdown formatting for better readability)
-Improvement Tips: [At least 3 actionable and specific tips with jargon term suggestions, placement advice, and refinement guidance] (Use markdown formatting for better readability)
+Reason: [Detailed explanation of the score, including strengths, weaknesses, and appropriateness assessment] (Use markdown formatting excessively for better readability)
+Improvement Tips: [At least 3 actionable and specific tips with jargon term suggestions, placement advice, and refinement guidance] (Use markdown formatting excessively for better readability)

@@ -46,5 +46,5 @@
 
 **Desired Output Format:**
 Score: [Score 1-10]
-Reason: [Detailed explanation of the score, addressing ATS Compatibility and Human Readability aspects as outlined above] (Use markdown formatting for better readability)
-Tips for Improvement: [At least three actionable and specific tips for improving formatting and readability] (Use markdown formatting for better readability)
+Reason: [Detailed explanation of the score, addressing ATS Compatibility and Human Readability aspects as outlined above] (Use markdown formatting excessively for better readability)
+Tips for Improvement: [At least three actionable and specific tips for improving formatting and readability] (Use markdown formatting excessively for better readability)

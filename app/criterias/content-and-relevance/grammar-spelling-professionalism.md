@@ -35,8 +35,8 @@
 
 **Desired Output Format:**
 Score: [Score 1-10]
-Reason: [Detailed explanation including types of errors and professionalism concerns] (Use markdown formatting for better readability)
-Mistake-Based Tips for Improvement: (Use markdown formatting for better readability)
+Reason: [Detailed explanation including types of errors and professionalism concerns] (Use markdown formatting excessively for better readability)
+Mistake-Based Tips for Improvement: (Use markdown formatting excessively for better readability)
 
 - [Tip 1: Addressing Error Type 1]
 - [Tip 2: Addressing Error Type 2]

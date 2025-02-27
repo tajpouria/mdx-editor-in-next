@@ -29,5 +29,5 @@ Analyze the resume for keyword optimization in relation to the job description t
 
 **Desired Output Format:**
 Score: [Score 1-10]
-Reason: [Detailed, multi-faceted explanation of the score covering relevance, density, integration quality, strategic placement, categorized missing keywords, and contextual understanding] (Use markdown formatting for better readability)
-Tips for Improvement: [Actionable and targeted recommendations including specific keyword suggestions, section-specific strategies, natural integration techniques with examples, and an emphasis on iterative optimization] (Use markdown formatting for better readability)
+Reason: [Detailed, multi-faceted explanation of the score covering relevance, density, integration quality, strategic placement, categorized missing keywords, and contextual understanding] (Use markdown formatting excessively for better readability)
+Tips for Improvement: [Actionable and targeted recommendations including specific keyword suggestions, section-specific strategies, natural integration techniques with examples, and an emphasis on iterative optimization] (Use markdown formatting excessively for better readability)

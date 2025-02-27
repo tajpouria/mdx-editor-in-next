@@ -28,5 +28,5 @@ Evaluate the resume Education and Certifications section for its relevance to th
 
 **Desired Output Format:**
 Score: [Score 1-10]
-Reason: [Detailed explanation of the score as outlined in instruction 2] (Use markdown formatting for better readability)
-Tips for Improvement: [Actionable tips categorized under Content Enhancement and Presentation/Emphasis as outlined in instruction 3] (Use markdown formatting for better readability)
+Reason: [Detailed explanation of the score as outlined in instruction 2] (Use markdown formatting excessively for better readability)
+Tips for Improvement: [Actionable tips categorized under Content Enhancement and Presentation/Emphasis as outlined in instruction 3] (Use markdown formatting excessively for better readability)

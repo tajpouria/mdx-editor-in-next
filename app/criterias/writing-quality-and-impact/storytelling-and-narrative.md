@@ -37,5 +37,5 @@
 **Desired Output Format:**
 
 Score: [Narrative Score 1-10]
-Reason: [Detailed explanation addressing the points above] (Use markdown formatting for better readability)
-Tips for Improvement: [3-5 actionable and specific improvement tips] (Use markdown formatting for better readability)
+Reason: [Detailed explanation addressing the points above] (Use markdown formatting excessively for better readability)
+Tips for Improvement: [3-5 actionable and specific improvement tips] (Use markdown formatting excessively for better readability)

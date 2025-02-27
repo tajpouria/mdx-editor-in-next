@@ -29,5 +29,5 @@
 **Desired Output Format:**
 
 Score: [Score 1-10]
-Justification: [Concise explanation of the score, addressing specificity, value proposition, and keywords] (Use markdown formatting for better readability)
-Improvement Tips: [2-3 actionable tips with specific keyword suggestions and value-driven revisions] (Use markdown formatting for better readability)
+Justification: [Concise explanation of the score, addressing specificity, value proposition, and keywords] (Use markdown formatting excessively for better readability)
+Improvement Tips: [2-3 actionable tips with specific keyword suggestions and value-driven revisions] (Use markdown formatting excessively for better readability)

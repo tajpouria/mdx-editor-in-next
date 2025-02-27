@@ -41,5 +41,5 @@ Your task is to evaluate the **Experience** section of the provided resume text 
 **Desired Output Format:**
 
 Score: [Score 1-10]
-Reason: [Structured explanation of the score, addressing Strengths, Weaknesses, and Variety] (Use markdown formatting for better readability)
-Tips for Improvement: [Categorized actionable tips for improving action verb variety and strength] (Use markdown formatting for better readability)
+Reason: [Structured explanation of the score, addressing Strengths, Weaknesses, and Variety] (Use markdown formatting excessively for better readability)
+Tips for Improvement: [Categorized actionable tips for improving action verb variety and strength] (Use markdown formatting excessively for better readability)

@@ -36,5 +36,5 @@
 **Desired Output Format:**
 
 Score: [Score 1-10]
-Reason: [Concise justification of the score] (Use markdown formatting for better readability)
-Tips for Improvement: [Actionable, specific, and relevant recommendations] (Use markdown formatting for better readability)
+Reason: [Concise justification of the score] (Use markdown formatting excessively for better readability)
+Tips for Improvement: [Actionable, specific, and relevant recommendations] (Use markdown formatting excessively for better readability)

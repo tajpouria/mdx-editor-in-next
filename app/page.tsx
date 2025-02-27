@@ -26,6 +26,7 @@ import {
   Star,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const EditorComp = dynamic(() => import("./EditorComponent"), { ssr: false });
 
@@ -480,7 +481,9 @@ export default function Home() {
                                               : "Needs Improvement"}
                                           </Badge>
                                         </div>
-                                        <ReactMarkdown>
+                                        <ReactMarkdown
+                                          remarkPlugins={[remarkGfm]}
+                                        >
                                           {metricResult.result.reason}
                                         </ReactMarkdown>
                                         {metricResult.result.tips.length >
@@ -489,7 +492,9 @@ export default function Home() {
                                             <p className="font-medium mb-2">
                                               Improvement Tips:
                                             </p>
-                                            <ReactMarkdown>
+                                            <ReactMarkdown
+                                              remarkPlugins={[remarkGfm]}
+                                            >
                                               {formatTipsWithIcons(
                                                 metricResult.result.tips
                                               )}
