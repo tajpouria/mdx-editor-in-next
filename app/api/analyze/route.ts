@@ -151,18 +151,24 @@ export async function POST(request: NextRequest) {
     );
 
     console.log("Usages:", usages);
-    console.log(
-      "Overall Usage:",
-      Object.values(usages).reduce(
-        (acc, usage) => {
-          acc.promptTokens += usage.promptTokens;
-          acc.completionTokens += usage.completionTokens;
-          acc.totalTokens += usage.totalTokens;
-          return acc;
-        },
-        { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
-      )
+    const overallUsage = Object.values(usages).reduce(
+      (acc, usage) => {
+        acc.promptTokens += usage.promptTokens;
+        acc.completionTokens += usage.completionTokens;
+        acc.totalTokens += usage.totalTokens;
+        return acc;
+      },
+      { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
     );
+    // Gemini 2.0 Flash
+    // Input price per 1M tokens in USD $0.10
+    // Output price per 1M tokens in USD $0.40
+    const overallUsagePrice = {
+      promptPrice: (overallUsage.promptTokens / 1000000) * 0.1,
+      completionPrice: (overallUsage.completionTokens / 1000000) * 0.4,
+      totalPrice: (overallUsage.totalTokens / 1000000) * 0.4, // or overallUsagePrice.promptPrice + overallUsagePrice.completionPrice depending on your need.
+    };
+    console.log("Overall Price:", overallUsagePrice);
 
     return NextResponse.json(categoryResults, { status: 200 });
   } catch (error) {

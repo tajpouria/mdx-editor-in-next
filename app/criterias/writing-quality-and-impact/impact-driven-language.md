@@ -27,5 +27,5 @@ Evaluate the resume text below for the effective use of **impact-driven language
 
 **Desired Output Format:**
 Score: [Score 1-10]
-Reason: [Explanation of score with positive and negative examples, and comment on overall balance] (Use simple text formatting no markdown or HTML or special characters)
-Tips for Improvement: [3-5 actionable tips categorized under "Focus on Results," "Quantify Impact," "Use Strong Action Verbs," "Rephrase Task-Focused Language"] (Use simple text formatting no markdown or HTML or special characters)
+Reason: [Explanation of score with positive and negative examples, and comment on overall balance] (Use markdown formatting for better readability)
+Tips for Improvement: [3-5 actionable tips categorized under "Focus on Results," "Quantify Impact," "Use Strong Action Verbs," "Rephrase Task-Focused Language"] (Use markdown formatting for better readability)

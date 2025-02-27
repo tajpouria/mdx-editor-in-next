@@ -37,5 +37,5 @@
 **Desired Output Format:**
 
 Score: [Score 1-10]
-Reason: [Detailed explanation of the score - addressing present/missing sections, clarity, labeling, and structure] (Use simple text formatting no markdown or HTML or special characters)
-Tips for Improvement: [Actionable tips for improving section headings and structure, including specific section suggestions, clarity improvements, structural reorganization advice, and examples of stronger headings] (Use simple text formatting no markdown or HTML or special characters)
+Reason: [Detailed explanation of the score - addressing present/missing sections, clarity, labeling, and structure] (Use markdown formatting for better readability)
+Tips for Improvement: [Actionable tips for improving section headings and structure, including specific section suggestions, clarity improvements, structural reorganization advice, and examples of stronger headings] (Use markdown formatting for better readability)

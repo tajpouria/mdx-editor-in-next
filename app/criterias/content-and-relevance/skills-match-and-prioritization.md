@@ -40,5 +40,5 @@ Your task is to analyze the provided resume against the job description and prov
 **Desired Output Format:**
 
 Score: [Score 1-10]
-Rationale: [Detailed explanation of the score, addressing skill overlap, missing skills, and prioritization] (Use simple text formatting no markdown or HTML or special characters)
-Improvement Tips: [Actionable, specific tips for skill enhancement and prioritization, including section and skill recommendations] (Use simple text formatting no markdown or HTML or special characters)
+Rationale: [Detailed explanation of the score, addressing skill overlap, missing skills, and prioritization] (Use markdown formatting for better readability)
+Improvement Tips: [Actionable, specific tips for skill enhancement and prioritization, including section and skill recommendations] (Use markdown formatting for better readability)

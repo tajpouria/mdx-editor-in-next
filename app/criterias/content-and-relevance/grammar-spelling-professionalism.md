@@ -35,8 +35,8 @@
 
 **Desired Output Format:**
 Score: [Score 1-10]
-Reason: [Detailed explanation including types of errors and professionalism concerns] (Use simple text formatting no markdown or HTML or special characters)
-Mistake-Based Tips for Improvement: (Use simple text formatting no markdown or HTML or special characters)
+Reason: [Detailed explanation including types of errors and professionalism concerns] (Use markdown formatting for better readability)
+Mistake-Based Tips for Improvement: (Use markdown formatting for better readability)
 
 - [Tip 1: Addressing Error Type 1]
 - [Tip 2: Addressing Error Type 2]

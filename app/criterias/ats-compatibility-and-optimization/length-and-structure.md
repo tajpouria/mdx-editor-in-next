@@ -24,5 +24,5 @@ Evaluate the provided resume text for appropriate length and structural balance,
 
 **Desired Output Format:**
 Score: [Score 1-10]
-Reason: [Explanation of score, addressing length and section proportionality] (Use simple text formatting no markdown or HTML or special characters)
-Tips for Improvement: [Specific, actionable tips for length and balance, potentially suggesting areas to condense/expand, and ideal page count. If no JD, note general advice.] (Use simple text formatting no markdown or HTML or special characters)
+Reason: [Explanation of score, addressing length and section proportionality] (Use markdown formatting for better readability)
+Tips for Improvement: [Specific, actionable tips for length and balance, potentially suggesting areas to condense/expand, and ideal page count. If no JD, note general advice.] (Use markdown formatting for better readability)

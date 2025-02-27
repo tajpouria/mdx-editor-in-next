@@ -19,7 +19,13 @@ import {
   Briefcase,
   Loader2,
   LogOut,
+  CheckCircle,
+  AlertTriangle,
+  ArrowUpCircle,
+  Lightbulb,
+  Star,
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 const EditorComp = dynamic(() => import("./EditorComponent"), { ssr: false });
 
@@ -258,6 +264,29 @@ export default function Home() {
     };
   }, [isResizing]);
 
+  // Function to add icons to improvement tips
+  const formatTipsWithIcons = (tips: string[]) => {
+    if (!tips || tips.length === 0) return "";
+
+    // Use different icons for each tip to provide visual variety
+    const icons = [
+      "✨", // Sparkles for highlighting
+      "🔍", // Magnifying glass for focus areas
+      "📈", // Chart up for improvement
+      "💡", // Light bulb for ideas
+      "🎯", // Target for precision
+      "⭐", // Star for important points
+      "🚀", // Rocket for advancement
+      "📝", // Note for documentation
+      "🔄", // Refresh for updates
+      "👍", // Thumbs up for positive reinforcement
+    ];
+
+    return tips
+      .map((tip, index) => `${icons[index % icons.length]} ${tip}\n`)
+      .join("\n");
+  };
+
   if (!isAuthenticated) {
     return <LoginForm onLoginSuccess={() => setIsAuthenticated(true)} />;
   }
@@ -451,27 +480,20 @@ export default function Home() {
                                               : "Needs Improvement"}
                                           </Badge>
                                         </div>
-                                        <p className="text-gray-600 mb-4">
+                                        <ReactMarkdown>
                                           {metricResult.result.reason}
-                                        </p>
+                                        </ReactMarkdown>
                                         {metricResult.result.tips.length >
                                           0 && (
                                           <div className="bg-gray-50 p-4 rounded-lg">
                                             <p className="font-medium mb-2">
                                               Improvement Tips:
                                             </p>
-                                            <ul className="list-disc list-inside space-y-1">
-                                              {metricResult.result.tips.map(
-                                                (tip, tipIndex) => (
-                                                  <li
-                                                    key={tipIndex}
-                                                    className="text-gray-600"
-                                                  >
-                                                    {tip}
-                                                  </li>
-                                                )
+                                            <ReactMarkdown>
+                                              {formatTipsWithIcons(
+                                                metricResult.result.tips
                                               )}
-                                            </ul>
+                                            </ReactMarkdown>
                                           </div>
                                         )}
                                       </CardContent>
